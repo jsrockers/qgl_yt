@@ -5,13 +5,23 @@ import { GraphQLBoolean, GraphQLFloat, GraphQLInt, GraphQLList, GraphQLObjectTyp
 const app = express()
 const port = 8080
 
-const Types = new GraphQLObjectType({
-    name: "Types",
+const EmployeeType = new GraphQLObjectType({
+    name: "Employee",
     fields: {
         name: { type: GraphQLString },
         age: { type: GraphQLInt },
         dev: { type: GraphQLBoolean },
-        price: { type: GraphQLFloat }
+        price: { type: GraphQLFloat },
+        company: {
+            type: new GraphQLObjectType({
+                name: "Company",
+                fields: {
+                    name: { type: GraphQLString },
+                    id: { type: GraphQLString },
+                    description: { type: GraphQLString },
+                }
+            }),
+        }
     }
 })
 
@@ -24,36 +34,22 @@ const query = new GraphQLObjectType({
                 return `Hello world`
             }
         },
-        types: {
-            type: Types,
+        employee: {
+            type: EmployeeType,
             resolve: () => {
                 return {
                     name: "Suresh GV",
                     age: 26,
                     dev: true,
-                    price: 102.35
+                    price: 102.35,
+                    company: {
+                        name: "Company 1",
+                        id: "1",
+                        description: "A serviece base company"
+                    }
                 }
             }
         },
-        List: {
-            type: new GraphQLList(Types),
-            resolve: () => {
-                return [
-                    {
-                        name: "Suresh GV",
-                        age: 26,
-                        dev: true,
-                        price: 102.35
-                    },
-                    {
-                        name: "Pradeep K",
-                        age: 25,
-                        dev: false,
-                        price: 50.35
-                    }
-                ]
-            }
-        }
     }
 })
 
